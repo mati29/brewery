@@ -2,23 +2,24 @@ package guru.springframework.brewery.web.controller.v2;
 
 import guru.springframework.brewery.services.v2.BeerServiceV2;
 import guru.springframework.brewery.web.model.v2.BeerDtoV2;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+@Slf4j
 @Validated
 @RequestMapping("/api/v2/beer")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BeerControllerV2 {
 
     private final BeerServiceV2 beerServiceV2;
@@ -30,9 +31,10 @@ public class BeerControllerV2 {
 
     @PostMapping//POST - create new beer
     public ResponseEntity handlePost(@Valid @NotNull @RequestBody BeerDtoV2 beerDto) {
-        BeerDtoV2 saveDto = beerServiceV2.saveNewBeer(beerDto);
+        log.debug("in handle post...");
+        val saveDto = beerServiceV2.saveNewBeer(beerDto);
 
-        HttpHeaders headers = new HttpHeaders();
+        val headers = new HttpHeaders();
         //TODO add hostname to url
         headers.add("location", "/api/v1/beer/" + saveDto.getId().toString());
 
